@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ledgerly - Gestión de Finanzas</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Ledgerly</h1>
+      <p>Control de ingresos y gastos</p>
+    </header>
+
+    <section class="form-section">
+      <h2>Nueva transacción</h2>
+      <form id="transaction-form">
+        <select id="tipo" required>
+          <option value="">Tipo</option>
+          <option value="INGRESO">Ingreso</option>
+          <option value="EGRESO">Egreso</option>
+        </select>
+        <input type="number" id="monto" placeholder="Monto" required>
+        <input type="text" id="descripcion" placeholder="Descripción">
+        <input type="date" id="fecha" required>
+        <button type="submit">Agregar</button>
+      </form>
+    </section>
+
+    <section class="list-section">
+      <h2>Transacciones recientes</h2>
+      <table id="transactions-table">
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Monto</th>
+            <th>Descripción</th>
+            <th>Fecha</th>
+            <th>Categoría</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Se llenará dinámicamente -->
+        </tbody>
+      </table>
+    </section>
+
+    <section class="chart-section">
+      <h2>Gastos vs Ingresos</h2>
+      <canvas id="balanceChart"></canvas>
+    </section>
+  </div>
+
+  <script src="scripts/api.js"></script>
+  <script src="scripts/charts.js"></script>
+</body>
+</html>
