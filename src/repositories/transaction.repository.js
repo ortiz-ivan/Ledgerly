@@ -92,6 +92,72 @@ class TransactionRepository {
     };
   }
 
+  /**
+   * Obtener todas las categorías
+   * @returns {Array<Object>}
+   */
+  listarCategorias() {
+    const stmt = db.prepare(`
+      SELECT id, nombre, descripcion
+      FROM categorias
+      ORDER BY nombre ASC
+    `);
+    return stmt.all();
+  }
+
+  /**
+   * Obtener gastos agrupados por categoría para un mes
+   * @param {string} anioMes - formato 'YYYY-MM'
+   * @returns {Array<Object>} { categoria: string, total: number }
+   */
+  obtenerGastosPorCategoria(anioMes) {
+    const stmt = db.prepare(`
+      SELECT c.nombre AS categoria, SUM(t.monto) AS total
+      FROM transacciones t
+      LEFT JOIN categorias c ON t.categoria_id = c.id
+      WHERE t.tipo = 'EGRESO'
+        AND strftime('%Y-%m', t.fecha) = ?
+      GROUP BY t.categoria_id
+      ORDER BY total DESC
+    `);
+    return stmt.all(anioMes);
+  }
+
+  /**
+   * Obtener balance por mes (últimos 12 meses)
+   * @returns {Array<Object>} { mes: string, ingresos: number, egresos: number, balance: number }
+   */
+  obtenerBalancePorMes() {
+    const stmt = db.prepare(`
+      SELECT 
+        strftime('%Y-%m', fecha) AS mes,
+        SUM(CASE WHEN tipo = 'INGRESO' THEN monto ELSE 0 END) AS ingresos,
+        SUM(CASE WHEN tipo = 'EGRESO' THEN monto ELSE 0 END) AS egresos
+      FROM transacciones
+      WHERE fecha >= date('now', '-12 months')
+      GROUP BY strftime('%Y-%m', fecha)
+      ORDER BY mes ASC
+    `);
+    return stmt.all();
+  }
+
+  /**
+   * Obtener transacciones en un rango de fechas
+   * @param {string} fechaInicio - formato YYYY-MM-DD
+   * @param {string} fechaFin - formato YYYY-MM-DD
+   * @returns {Array<Object>}
+   */
+  listarPorRangoFechas(fechaInicio, fechaFin) {
+    const stmt = db.prepare(`
+      SELECT t.id, t.tipo, t.monto, t.descripcion, t.fecha, t.categoria_id, c.nombre AS categoria
+      FROM transacciones t
+      LEFT JOIN categorias c ON t.categoria_id = c.id
+      WHERE t.fecha >= ? AND t.fecha <= ?
+      ORDER BY t.fecha DESC
+    `);
+    return stmt.all(fechaInicio, fechaFin);
+  }
+
 }
 
 module.exports = new TransactionRepository();

@@ -81,6 +81,37 @@ class TransactionService {
     exportarCSV(transacciones, rutaArchivo);
   }
 
+  /**
+   * Listar todas las categorías
+   */
+  listarCategorias() {
+    return transactionRepo.listarCategorias();
+  }
+
+  /**
+   * Obtener gastos por categoría para un mes
+   * @param {string} anioMes - formato 'YYYY-MM'
+   */
+  obtenerGastosPorCategoria(anioMes) {
+    return transactionRepo.obtenerGastosPorCategoria(anioMes);
+  }
+
+  /**
+   * Obtener balance por mes (últimos 12 meses)
+   */
+  obtenerBalancePorMes() {
+    return transactionRepo.obtenerBalancePorMes();
+  }
+
+  /**
+   * Obtener transacciones en un rango de fechas
+   * @param {string} fechaInicio - formato YYYY-MM-DD
+   * @param {string} fechaFin - formato YYYY-MM-DD
+   */
+  listarPorRangoFechas(fechaInicio, fechaFin) {
+    return transactionRepo.listarPorRangoFechas(fechaInicio, fechaFin);
+  }
+
 }
 
 module.exports = new TransactionService();

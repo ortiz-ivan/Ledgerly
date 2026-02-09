@@ -23,6 +23,13 @@ function ejecutarMigraciones() {
 
   const sqlMigraciones = fs.readFileSync(rutaMigraciones, 'utf-8');
   db.exec(sqlMigraciones);
+
+  // Ejecutar seed si existe
+  const rutaSeed = path.join(__dirname, '../db/seed.sql');
+  if (fs.existsSync(rutaSeed)) {
+    const sqlSeed = fs.readFileSync(rutaSeed, 'utf-8');
+    db.exec(sqlSeed);
+  }
 }
 
 // Ejecutar migraciones al iniciar

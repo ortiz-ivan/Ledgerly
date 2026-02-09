@@ -19,6 +19,17 @@ async function exportarCSV(datos, rutaArchivo) {
   }));
 
   const rutaFinal = path.resolve(rutaArchivo);
+  
+  // Crear directorio si no existe
+  try {
+    const dir = path.dirname(rutaFinal);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+  } catch (error) {
+    console.error('Error al crear directorio:', error);
+    throw error;
+  }
 
   const csvWriter = createObjectCsvWriter({
     path: rutaFinal,

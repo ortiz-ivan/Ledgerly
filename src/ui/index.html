@@ -17,16 +17,34 @@
     <section class="form-section">
       <h2>Nueva transacción</h2>
       <form id="transaction-form">
-        <select id="tipo" required>
-          <option value="">Tipo</option>
-          <option value="INGRESO">Ingreso</option>
-          <option value="EGRESO">Egreso</option>
-        </select>
-        <input type="number" id="monto" placeholder="Monto" required>
-        <input type="text" id="descripcion" placeholder="Descripción">
-        <input type="date" id="fecha" required>
-        <button type="submit">Agregar</button>
+        <div class="form-row">
+          <select id="tipo" required>
+            <option value="">Tipo</option>
+            <option value="INGRESO">Ingreso</option>
+            <option value="EGRESO">Egreso</option>
+          </select>
+          <input type="number" id="monto" placeholder="Monto" required step="0.01">
+        </div>
+        <div class="form-row">
+          <input type="date" id="fecha" required>
+          <select id="categoria" required>
+            <option value="">Categoría</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <input type="text" id="descripcion" placeholder="Descripción (opcional)">
+          <button type="submit">Agregar</button>
+        </div>
       </form>
+    </section>
+
+    <section class="export-section">
+      <h2>Exportar datos</h2>
+      <div class="export-controls">
+        <input type="date" id="fecha-inicio" placeholder="Desde">
+        <input type="date" id="fecha-fin" placeholder="Hasta">
+        <button id="export-btn">Descargar CSV</button>
+      </div>
     </section>
 
     <section class="list-section">
@@ -47,9 +65,21 @@
       </table>
     </section>
 
-    <section class="chart-section">
-      <h2>Gastos vs Ingresos</h2>
-      <canvas id="balanceChart"></canvas>
+    <section class="charts-section">
+      <div class="chart-container">
+        <h2>Balance mensual actual</h2>
+        <canvas id="balanceChart"></canvas>
+      </div>
+
+      <div class="chart-container">
+        <h2>Gastos por categoría</h2>
+        <canvas id="categoryChart"></canvas>
+      </div>
+
+      <div class="chart-container">
+        <h2>Balance histórico (últimos 12 meses)</h2>
+        <canvas id="historyChart"></canvas>
+      </div>
     </section>
   </div>
 
