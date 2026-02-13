@@ -112,7 +112,7 @@ class TransactionRepository {
    */
   obtenerGastosPorCategoria(anioMes) {
     const stmt = db.prepare(`
-      SELECT c.nombre AS categoria, SUM(t.monto) AS total
+      SELECT COALESCE(c.nombre, 'Sin categoría') AS categoria, SUM(t.monto) AS total
       FROM transacciones t
       LEFT JOIN categorias c ON t.categoria_id = c.id
       WHERE t.tipo = 'EGRESO'

@@ -67,7 +67,7 @@ function renderTransactions(transactions) {
     row.classList.add(tipoClase);
     row.innerHTML = `
       <td><span class="badge ${tipoClase}">${t.tipo}</span></td>
-      <td>${t.monto.toFixed(2)}</td>
+      <td>${formatearMoneda(t.monto)}</td>
       <td>${t.descripcion || '-'}</td>
       <td>${t.fecha}</td>
       <td>${t.categoria || '-'}</td>
@@ -100,13 +100,17 @@ form.addEventListener('submit', async (e) => {
     });
 
     if (res.ok) {
+      console.log('Transacción creada exitosamente');
       fetchTransactions();
       form.reset();
       categoriaSelect.innerHTML = '<option value="">Categoría</option>';
-      // Recargar gráficos
-      if (typeof renderChart === 'function') renderChart();
-      if (typeof renderCategoryChart === 'function') renderCategoryChart();
-      if (typeof renderHistoryChart === 'function') renderHistoryChart();
+      // Recargar gráficos usando la función global
+      if (window.reloadCharts && typeof window.reloadCharts === 'function') {
+        console.log('Llamando a reloadCharts()');
+        window.reloadCharts();
+      } else {
+        console.warn('reloadCharts no está disponible');
+      }
     } else {
       const error = await res.json();
       alert('Error: ' + error.error);

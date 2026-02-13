@@ -8,9 +8,12 @@ let historyChartInstance = null;
 async function fetchBalance() {
   const today = new Date();
   const mes = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+  console.log('Obteniendo balance para:', mes);
   try {
     const res = await fetch(`${API_URL}/${mes}/balance`);
-    return await res.json();
+    const data = await res.json();
+    console.log('Balance obtenido:', data);
+    return data;
   } catch (error) {
     console.error('Error al obtener balance:', error);
     return { ingresos: 0, egresos: 0, balance: 0 };
@@ -21,9 +24,12 @@ async function fetchBalance() {
 async function fetchCategoryData() {
   const today = new Date();
   const mes = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+  console.log('Obteniendo gastos por categoría para:', mes);
   try {
     const res = await fetch(`${API_URL}/${mes}/gastos-por-categoria`);
-    return await res.json();
+    const data = await res.json();
+    console.log('Gastos por categoría obtenidos:', data);
+    return data;
   } catch (error) {
     console.error('Error al obtener gastos por categoría:', error);
     return [];
@@ -32,9 +38,12 @@ async function fetchCategoryData() {
 
 // Obtener balance histórico
 async function fetchHistoryData() {
+  console.log('Obteniendo balance histórico');
   try {
     const res = await fetch(`${API_URL}/balance/historial`);
-    return await res.json();
+    const data = await res.json();
+    console.log('Balance histórico obtenido:', data);
+    return data;
   } catch (error) {
     console.error('Error al obtener historial:', error);
     return [];
@@ -43,15 +52,22 @@ async function fetchHistoryData() {
 
 // Renderizar gráfico de balance mensual
 async function renderChart() {
+  console.log('renderChart iniciando...');
   const balance = await fetchBalance();
+  console.log('balance recibido en renderChart:', balance);
   const ctx = document.getElementById('balanceChart');
+  console.log('ctx encontrado:', !!ctx);
   
-  if (!ctx) return;
+  if (!ctx) {
+    console.warn('No se encontró elemento balanceChart');
+    return;
+  }
 
   if (balanceChartInstance) {
     balanceChartInstance.destroy();
   }
 
+  console.log('Creando gráfico de balance con datos:', balance);
   balanceChartInstance = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -68,21 +84,42 @@ async function renderChart() {
       maintainAspectRatio: true,
       plugins: {
         legend: { display: false },
-        title: { display: false }
+        title: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return formatearMoneda(context.raw || context.parsed.y || 0);
+            }
+          }
+        }
       },
       scales: {
-        y: { beginAtZero: true }
+        y: { 
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              return formatearMoneda(value);
+            }
+          }
+        }
       }
     }
   });
+  console.log('Gráfico de balance creado exitosamente');
 }
 
 // Renderizar gráfico de gastos por categoría
 async function renderCategoryChart() {
+  console.log('renderCategoryChart iniciando...');
   const data = await fetchCategoryData();
+  console.log('data recibido en renderCategoryChart:', data);
   const ctx = document.getElementById('categoryChart');
+  console.log('ctx encontrado:', !!ctx);
   
-  if (!ctx || !data || data.length === 0) return;
+  if (!ctx || !data || data.length === 0) {
+    console.warn('No hay datos o elemento no encontrado:', { ctx: !!ctx, data: data?.length });
+    return;
+  }
 
   if (categoryChartInstance) {
     categoryChartInstance.destroy();
@@ -96,6 +133,7 @@ async function renderCategoryChart() {
     '#FF9F40', '#FF6384', '#C9CBCF'
   ];
 
+  console.log('Creando gráfico de categoría con labels:', labels, 'values:', values);
   categoryChartInstance = new Chart(ctx, {
     type: 'doughnut',
     data: {
@@ -110,18 +148,32 @@ async function renderCategoryChart() {
       responsive: true,
       maintainAspectRatio: true,
       plugins: {
-        legend: { position: 'bottom' }
+        legend: { position: 'bottom' },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return formatearMoneda(context.raw || context.parsed || 0);
+            }
+          }
+        }
       }
     }
   });
+  console.log('Gráfico de categoría creado exitosamente');
 }
 
 // Renderizar gráfico de historial
 async function renderHistoryChart() {
+  console.log('renderHistoryChart iniciando...');
   const data = await fetchHistoryData();
+  console.log('data recibido en renderHistoryChart:', data);
   const ctx = document.getElementById('historyChart');
+  console.log('ctx encontrado:', !!ctx);
   
-  if (!ctx || !data || data.length === 0) return;
+  if (!ctx || !data || data.length === 0) {
+    console.warn('No hay datos o elemento no encontrado:', { ctx: !!ctx, data: data?.length });
+    return;
+  }
 
   if (historyChartInstance) {
     historyChartInstance.destroy();
@@ -131,6 +183,7 @@ async function renderHistoryChart() {
   const ingresos = data.map(d => d.ingresos || 0);
   const egresos = data.map(d => d.egresos || 0);
 
+  console.log('Creando gráfico de historial con labels:', labels);
   historyChartInstance = new Chart(ctx, {
     type: 'line',
     data: {
@@ -158,22 +211,54 @@ async function renderHistoryChart() {
       responsive: true,
       maintainAspectRatio: true,
       plugins: {
-        legend: { position: 'bottom' }
+        legend: { position: 'bottom' },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return context.dataset.label + ': ' + formatearMoneda(context.raw || context.parsed.y || 0);
+            }
+          }
+        }
       },
       scales: {
-        y: { beginAtZero: true }
+        y: { 
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              return formatearMoneda(value);
+            }
+          }
+        }
       }
     }
   });
+  console.log('Gráfico de historial creado exitosamente');
 }
 
 // Renderizar todos los gráficos
 async function renderAllCharts() {
+  console.log('renderAllCharts iniciando...');
   await renderChart();
   await renderCategoryChart();
   await renderHistoryChart();
+  console.log('Todos los gráficos renderizados');
 }
 
+// Función global para recargar gráficos cuidadosamente
+async function reloadCharts() {
+  console.log('reloadCharts llamada - recargando todos los gráficos');
+  try {
+    await renderAllCharts();
+    console.log('Gráficos recargados exitosamente');
+  } catch (error) {
+    console.error('Error al recargar gráficos:', error);
+  }
+}
+
+// Hacer la función global accesible desde otros scripts
+window.reloadCharts = reloadCharts;
+
 // Inicializar gráficos
+console.log('Iniciando aplicación de gráficos');
 renderAllCharts();
 
