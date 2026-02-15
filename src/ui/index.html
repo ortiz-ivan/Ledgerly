@@ -13,6 +13,9 @@
     <header>
       <h1>Ledgerly</h1>
       <p>Control de ingresos y gastos</p>
+      <div style="margin-top:8px;">
+        <a href="charts.html" style="display:inline-block;padding:8px 12px;background:#004590;color:#fff;border-radius:6px;text-decoration:none;">Ver gráficos</a>
+      </div>
     </header>
 
     <section class="form-section">
@@ -66,25 +69,9 @@
       </table>
     </section>
 
-    <section class="charts-section">
-      <div class="chart-container">
-        <h2>Balance mensual actual</h2>
-        <canvas id="balanceChart"></canvas>
-      </div>
-
-      <div class="chart-container">
-        <h2>Gastos por categoría</h2>
-        <canvas id="categoryChart"></canvas>
-      </div>
-
-      <div class="chart-container">
-        <h2>Balance histórico (últimos 12 meses)</h2>
-        <canvas id="historyChart"></canvas>
-      </div>
-    </section>
+    <!-- Gráficos movidos a charts.html -->
   </div>
 
   <script src="scripts/api.js"></script>
-  <script src="scripts/charts.js"></script>
 </body>
 </html>
