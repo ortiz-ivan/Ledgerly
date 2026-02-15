@@ -4,37 +4,56 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ledgerly - Gráficos</title>
-  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/output.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="config/currency.js"></script>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Ledgerly</h1>
-      <p>Vista de gráficos</p>
-      <div style="margin-top:8px;">
-        <a href="index.html" style="display:inline-block;padding:8px 12px;background:#004590;color:#fff;border-radius:6px;text-decoration:none;">Volver</a>
-      </div>
-    </header>
+  <div class="min-h-screen bg-background text-gray-100">
+    <div class="max-w-6xl mx-auto px-6 py-10">
+      <header class="flex items-center justify-between mb-8">
+        <div>
+          <h1 class="text-3xl font-semibold">Ledgerly</h1>
+          <p class="text-sm text-muted mt-1">Dashboard de reportes financieros</p>
+        </div>
+        <div>
+          <a href="index.html" class="px-4 py-2 bg-surface rounded-xl hover:shadow-card-dark transition">← Volver</a>
+        </div>
+      </header>
 
-    <section class="charts-section">
-      <div class="chart-container">
-        <h2>Balance mensual actual</h2>
-        <canvas id="balanceChart"></canvas>
-      </div>
+      <!-- Métricas superiores -->
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div class="bg-surface p-5 rounded-xl shadow-card-dark">
+          <div class="text-sm text-muted">Ingresos (mes)</div>
+          <div id="metric-ingresos" class="text-2xl font-semibold mt-2">₲ 0</div>
+        </div>
+        <div class="bg-surface p-5 rounded-xl shadow-card-dark">
+          <div class="text-sm text-muted">Egresos (mes)</div>
+          <div id="metric-egresos" class="text-2xl font-semibold mt-2">₲ 0</div>
+        </div>
+        <div class="bg-surface p-5 rounded-xl shadow-card-dark">
+          <div class="text-sm text-muted">Balance</div>
+          <div id="metric-balance" class="text-2xl font-semibold mt-2">₲ 0</div>
+        </div>
+      </section>
 
-      <div class="chart-container">
-        <h2>Gastos por categoría</h2>
-        <canvas id="categoryChart"></canvas>
-      </div>
+      <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 bg-surface p-5 rounded-xl shadow-card-dark">
+          <h2 class="text-lg font-semibold mb-4">Balance mensual</h2>
+          <canvas id="balanceChart"></canvas>
+        </div>
 
-      <div class="chart-container">
-        <h2>Balance histórico (últimos 12 meses)</h2>
+        <div class="bg-surface p-5 rounded-xl shadow-card-dark">
+          <h2 class="text-lg font-semibold mb-4">Gastos por categoría</h2>
+          <canvas id="categoryChart"></canvas>
+        </div>
+      </section>
+
+      <section class="mt-6 bg-surface p-5 rounded-xl shadow-card-dark">
+        <h2 class="text-lg font-semibold mb-4">Historial (12 meses)</h2>
         <canvas id="historyChart"></canvas>
-      </div>
-    </section>
-
+      </section>
+    </div>
   </div>
 
   <script src="scripts/charts.js"></script>
